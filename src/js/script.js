@@ -82,8 +82,8 @@
       thisProduct.formInputs = thisProduct.form.querySelectorAll(select.all.formInputs);
       thisProduct.cartButton = thisProduct.element.querySelector(select.menuProduct.cartButton);
       thisProduct.priceElem = thisProduct.element.querySelector(select.menuProduct.priceElem);
+      thisProduct.imageWrapper = thisProduct.element.querySelector(select.menuProduct.imageWrapper);
     }
-
 
     initAccording() {
       const thisProduct = this;
@@ -96,16 +96,17 @@
         /* find active product (product that has active class) */
         const activeProduct = document.querySelector(select.menuProduct.activeProduct);
         /* if there is active product and it's not thisProduct.element, remove class active from it */
-        if (activeProduct !== null && activeProduct !== thisProduct.element) {
+        if (activeProduct !== null && activeProduct !== thisProduct.element){	
           activeProduct.classList.remove(classNames.menuProduct.wrapperActive);
         }
         /* toggle active class on thisProduct.element */
         thisProduct.element.classList.toggle(classNames.menuProduct.wrapperActive);
       });
     }
+
     initOrderForm() {
       const thisProduct = this;
-      thisProduct.form.addEventListener('submit', function (event) {
+      thisProduct.form.addEventListener('submit', function(event){
         event.preventDefault();
         thisProduct.processOrder();
       });
@@ -114,7 +115,7 @@
           thisProduct.processOrder();
         });
       }
-      thisProduct.cartButton.addEventListener('click', function (event) {
+      thisProduct.cartButton.addEventListener('click', function(event){
         event.preventDefault();
         thisProduct.processOrder();
       });
@@ -137,22 +138,32 @@
           // check if there is param with a name of paramId in formData and if it includes optionId
           if (formData[paramId] && formData[paramId].includes(optionId)) {
             // check if the option is not default
-            if (!option.default == true) {
+            if (!option.default) {
               // add option price to price variable
-              price += option.price;
+              price = price + option.price;
             }
           } else {
             // check if the option is default
-            if (option.default == true) {
+            if (option.default) {
               // reduce price variable
-              price -= option.price;
+              price = price - option.price;
+            }
+          }
+          const optionImage = thisProduct.imageWrapper.querySelector('.' + paramId + '-' + optionId);
+          if (optionImage) {
+            if (formData[paramId] && formData[paramId].includes(optionId)) {
+              optionImage.classList.add(classNames.menuProduct.imageVisible);
+            } else {
+              optionImage.classList.remove(classNames.menuProduct.imageVisible);
             }
           }
         }
-        // update calculated price in the HTML
-        thisProduct.priceElem.innerHTML = price;
       }
+      // update calculated price in the HTML
+      thisProduct.priceSingle = thisProduct.priceElem.innerHTML;
+      thisProduct.priceElem.innerHTML = price;
     }
+    
   }
   const app = {
     initMenu: function (){
